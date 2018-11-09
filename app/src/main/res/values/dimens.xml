@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="keyline_1">12dp</dimen>
+    <dimen name="avatar_size">36dp</dimen>
+    <dimen name="bottom_offset">116dp</dimen>
+</resources>

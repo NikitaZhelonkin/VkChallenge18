@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:id="@+id/scroll_view"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/card_layout"
+        android:background="@drawable/bg_card_elevation16"
+        android:orientation="vertical">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/top_layout"
+            android:padding="@dimen/keyline_1">
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/avatar_size"
+                android:layout_height="@dimen/avatar_size"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/colorTextTitle"
+                app:layout_constraintBottom_toTopOf="@id/subtitle"
+                app:layout_constraintLeft_toRightOf="@id/avatar"
+                app:layout_constraintTop_toTopOf="@id/avatar"
+                tools:text="Наталья Танаевва" />
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintLeft_toRightOf="@id/avatar"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:text="14 окт в 22:46" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/attachments_layout">
+
+            <ImageView
+                android:contentDescription="@null"
+                android:id="@+id/image_view"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lineSpacingExtra="7dp"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="15sp"
+            android:maxLines="3"
+            android:minLines="3"
+            android:padding="12dp"
+            tools:text="Проводим ежегодный конкурс с неизменным победителем с 2013" />
+
+
+        <TextView
+            android:id="@+id/btn_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="4dp"
+            android:layout_marginTop="-8dp"
+            android:drawableRight="@drawable/ic_dropdown_16"
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:text="@string/more"
+            android:textAllCaps="true"
+            android:textColor="@color/gray_chateau"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</ScrollView>

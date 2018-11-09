@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">VKChallenge</string>
+    <string name="login">Войти через вконтакте</string>
+    <string name="empty_feed">Пока пусто тут</string>
+    <string name="error_feed">Ошибка загрузки ленты</string>
+
+    <string name="more">Еще</string>
+
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="date_time">%1$s в %2$s</string>
+
+    <plurals name="days_back">
+        <item quantity="one">%s день назад</item>
+        <item quantity="few">%s дня назад</item>
+        <item quantity="other">%s дней назад</item>
+    </plurals>
+</resources>
