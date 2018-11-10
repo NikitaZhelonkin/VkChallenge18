@@ -1,15 +1,11 @@
 package com.vk.challenge.main;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
 
 import com.vk.challenge.data.entity.PostItem;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -23,7 +19,6 @@ public class FeedAdapter extends FragmentPagerAdapter {
 
     public void setData(List<PostItem> data) {
         mData = data;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -45,24 +40,15 @@ public class FeedAdapter extends FragmentPagerAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position == getCount() - 1 ? -1 : getDataItem(position).getPost().getPostId();
+        if (position == getCount() - 1) {
+            return -1;
+        }
+        return getDataItem(position).getPost().getPostId();
     }
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-//        Fragment fragment = ((Fragment) object);
-//        Bundle args = fragment.getArguments();
-//        PostItem postItem = args == null ? null : Parcels.unwrap(args.getParcelable("extra_item"));
-//        if (postItem == null) {
-//            return getCount() - 1;
-//        } else {
-//            int idx =  mData.indexOf(postItem);
-//            if (idx != -1) {
-//                return idx;
-//            } else {
-                return PagerAdapter.POSITION_NONE;
-//            }
-//        }
+        return POSITION_NONE;
     }
 
 }

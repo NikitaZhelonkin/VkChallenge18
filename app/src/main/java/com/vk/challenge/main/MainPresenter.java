@@ -2,8 +2,6 @@ package com.vk.challenge.main;
 
 import android.support.annotation.NonNull;
 
-import com.vk.challenge.data.api.response.FeedResponse;
-import com.vk.challenge.data.entity.Post;
 import com.vk.challenge.data.entity.PostItem;
 import com.vk.challenge.data.repository.FeedRepository;
 import com.vk.challenge.utils.AppSchedulers;
@@ -13,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import ru.nikitazhelonkin.mvp.MvpPresenterBase;
 
 public class MainPresenter extends MvpPresenterBase<MainView> {
@@ -43,8 +38,6 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
             return;
         }
         loadFeed();
-
-//        loadFeed(firstAttach);
     }
 
     public void onEnd(){
@@ -60,13 +53,7 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
     }
 
     private void loadFeed() {
-        if (getView() != null) {
-            getView().setEmptyViewVisible(false);
-            getView().setErrorViewVisible(false);
-            getView().setProgressVisible(true);
-        }
-
-        mSubscription = mFeedRepository.getFeed(mCurrentPage+1, mPageSize)
+        mSubscription = mFeedRepository.getFeed((mCurrentPage + 1) * mPageSize, mPageSize)
                 .compose(AppSchedulers.ioToMainTransformer())
                 .subscribe(this::onFeedResult, this::onFeedError);
 
@@ -74,17 +61,14 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
 
     private void onFeedResult(List<PostItem> posts) {
         mCurrentPage++;
-        mData.addAll(posts);
+        mData = posts;
         if (getView() == null) return;
         getView().setFeed(mData);
-        getView().setProgressVisible(false);
-        getView().setEmptyViewVisible(mData.size() == 0);
     }
 
     private void onFeedError(Throwable e) {
         if (getView() == null) return;
-        getView().setProgressVisible(false);
-        getView().setErrorViewVisible(true);
+        //TODO something
     }
 
     @Override

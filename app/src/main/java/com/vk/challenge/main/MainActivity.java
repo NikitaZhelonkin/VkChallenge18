@@ -25,12 +25,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @BindView(R.id.view_pager)
     StackViewPager mViewPager;
-//    @BindView(R.id.progress_bar)
-//    ProgressBar mProgressBar;
-//    @BindView(R.id.empty_view)
-//    View mEmptyView;
-//    @BindView(R.id.error_view)
-//    View mErrorView;
 
     private FeedAdapter mFeedAdapter;
 
@@ -43,7 +37,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         mFeedAdapter = new FeedAdapter(getSupportFragmentManager());
 
         mViewPager.setScroller(new FixedDurationScroller(this, new FastOutSlowInInterpolator(), 500));
-
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -89,24 +82,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void setFeed(List<PostItem> posts) {
-        int currentItem = mViewPager.getCurrentItem();
         mFeedAdapter.setData(posts);
-        mViewPager.setCurrentItem(currentItem);
+        mViewPager.setAdapter(mFeedAdapter);
     }
 
-    @Override
-    public void setProgressVisible(boolean visible) {
-//        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void setEmptyViewVisible(boolean visible) {
-//        mEmptyView.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void setErrorViewVisible(boolean visible) {
-//        mErrorView.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
 
 }

@@ -13,11 +13,4 @@ public interface MainView extends MvpView {
 
     void setFeed(List<PostItem> posts);
 
-    void setProgressVisible(boolean visible);
-
-    void setErrorViewVisible(boolean visible);
-
-    void setEmptyViewVisible(boolean visible);
-
-
 }
