@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ import butterknife.OnClick;
 public class FeedItemFragment extends Fragment {
 
     private static final String EXTRA_ITEM = "extra_item";
-
 
     @BindView(R.id.scroll_view)
     ScrollView mScrollView;
@@ -121,8 +119,10 @@ public class FeedItemFragment extends Fragment {
             mText.setMaxLines(Integer.MAX_VALUE);
 
             ViewUtils.onPreDraw(mText, () -> {
-                int fullHeight = mScrollView.getMeasuredHeight() - mCardLayout.getPaddingTop() - mCardLayout.getPaddingBottom();
-                int availableHeight = fullHeight - mTopLayout.getMeasuredHeight()-mText.getPaddingTop()-mText.getPaddingBottom();
+                int textVerticalPadding = mText.getPaddingTop() + mText.getPaddingBottom();
+                int cardVerticalPadding = mCardLayout.getPaddingTop() + mCardLayout.getPaddingBottom();
+                int availableHeight = mScrollView.getHeight() - cardVerticalPadding
+                        - mTopLayout.getHeight() - textVerticalPadding;
                 int maxLines = availableHeight / mText.getLineHeight();
                 int lines = mText.getLineCount();
                 mText.setMaxLines(maxLines);
