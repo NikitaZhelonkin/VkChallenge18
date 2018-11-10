@@ -2,15 +2,16 @@ package com.vk.challenge.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.vk.challenge.App;
 import com.vk.challenge.R;
-import com.vk.challenge.data.entity.Post;
 import com.vk.challenge.data.entity.PostItem;
 import com.vk.challenge.login.LoginActivity;
+import com.vk.challenge.widget.FixedDurationScroller;
+import com.vk.challenge.widget.StackViewPager;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ import ru.nikitazhelonkin.mvp.android.MvpActivity;
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView {
 
     @BindView(R.id.view_pager)
-    ViewPager mViewPager;
+    StackViewPager mViewPager;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
     @BindView(R.id.empty_view)
@@ -39,6 +40,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         ButterKnife.bind(this);
 
         mFeedAdapter = new FeedAdapter(getSupportFragmentManager());
+
+        mViewPager.setScroller(new FixedDurationScroller(this, new FastOutSlowInInterpolator(), 500));
 
         mViewPager.setAdapter(mFeedAdapter);
     }
