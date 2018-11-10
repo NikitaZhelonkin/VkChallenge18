@@ -38,4 +38,18 @@ public class PostItem {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PostItem postItem = (PostItem) o;
+
+        return mPost != null ? mPost.equals(postItem.mPost) : postItem.mPost == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return mPost != null ? mPost.hashCode() : 0;
+    }
 }

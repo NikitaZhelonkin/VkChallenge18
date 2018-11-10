@@ -2,6 +2,7 @@ package com.vk.challenge.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -24,12 +25,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @BindView(R.id.view_pager)
     StackViewPager mViewPager;
-    @BindView(R.id.progress_bar)
-    ProgressBar mProgressBar;
-    @BindView(R.id.empty_view)
-    View mEmptyView;
-    @BindView(R.id.error_view)
-    View mErrorView;
+//    @BindView(R.id.progress_bar)
+//    ProgressBar mProgressBar;
+//    @BindView(R.id.empty_view)
+//    View mEmptyView;
+//    @BindView(R.id.error_view)
+//    View mErrorView;
 
     private FeedAdapter mFeedAdapter;
 
@@ -43,6 +44,25 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         mViewPager.setScroller(new FixedDurationScroller(this, new FastOutSlowInInterpolator(), 500));
 
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                if(i==mFeedAdapter.getCount()-1){
+                    getPresenter().onEnd();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
         mViewPager.setAdapter(mFeedAdapter);
     }
 
@@ -69,22 +89,24 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void setFeed(List<PostItem> posts) {
+        int currentItem = mViewPager.getCurrentItem();
         mFeedAdapter.setData(posts);
+        mViewPager.setCurrentItem(currentItem);
     }
 
     @Override
     public void setProgressVisible(boolean visible) {
-        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void setEmptyViewVisible(boolean visible) {
-        mEmptyView.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        mEmptyView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void setErrorViewVisible(boolean visible) {
-        mErrorView.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        mErrorView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
 }

@@ -171,7 +171,7 @@ public class StackViewPager extends ViewPager {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (disableDrag()) {
-            return true;
+            return super.onInterceptTouchEvent(ev);
         }
         final int action = ev.getAction();
         if (action != MotionEvent.ACTION_DOWN) {
@@ -297,6 +297,20 @@ public class StackViewPager extends ViewPager {
             view.setTranslationY(translationYForPosition(position));
             view.setRotation(rotateForPosition(position));
             setScale(view, scaleForPosition(position));
+            setAlpha(view, alphaForPosition(position));
+        }
+
+        private float alphaForPosition(float position) {
+            int visibleItems = getVisibleItemsCount(VISIBLE_COUNT);
+            if (position > 0 && visibleItems != 0) {
+                return -(position - visibleItems) * 1 / visibleItems;
+            } else {
+                return 1;
+            }
+        }
+
+        private void setAlpha(View view, float alpha) {
+            view.setAlpha(alpha);
         }
 
         private void setScale(View v, float value) {

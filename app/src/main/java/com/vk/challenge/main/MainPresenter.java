@@ -9,6 +9,7 @@ import com.vk.challenge.data.repository.FeedRepository;
 import com.vk.challenge.utils.AppSchedulers;
 import com.vk.sdk.VKAccessToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -21,9 +22,12 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
 
     private FeedRepository mFeedRepository;
 
-    private List<PostItem> mData;
+    private List<PostItem> mData = new ArrayList<>();
 
     private Disposable mSubscription;
+
+    private int mCurrentPage = -1;
+    private int mPageSize = 10;
 
     public MainPresenter(FeedRepository feedRepository) {
         mFeedRepository = feedRepository;
@@ -38,8 +42,13 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
             view.navigateToLogin();
             return;
         }
+        loadFeed();
 
-        loadFeed(firstAttach);
+//        loadFeed(firstAttach);
+    }
+
+    public void onEnd(){
+        loadFeed();
     }
 
     public void onIgnoreClick(){
@@ -50,30 +59,26 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
         //TODO
     }
 
-    private void loadFeed(boolean force) {
-        if (mData != null) {
-            onFeedResult(mData);
+    private void loadFeed() {
+        if (getView() != null) {
+            getView().setEmptyViewVisible(false);
+            getView().setErrorViewVisible(false);
+            getView().setProgressVisible(true);
         }
-        if (force || mData == null) {
-            if (getView() != null) {
-                getView().setEmptyViewVisible(false);
-                getView().setErrorViewVisible(false);
-                getView().setProgressVisible(true);
-            }
 
-            mSubscription = mFeedRepository.getFeed(0, 20)
-                    .compose(AppSchedulers.ioToMainTransformer())
-                    .subscribe(this::onFeedResult, this::onFeedError);
-        }
+        mSubscription = mFeedRepository.getFeed(mCurrentPage+1, mPageSize)
+                .compose(AppSchedulers.ioToMainTransformer())
+                .subscribe(this::onFeedResult, this::onFeedError);
 
     }
 
     private void onFeedResult(List<PostItem> posts) {
-        mData = posts;
+        mCurrentPage++;
+        mData.addAll(posts);
         if (getView() == null) return;
-        getView().setFeed(posts);
+        getView().setFeed(mData);
         getView().setProgressVisible(false);
-        getView().setEmptyViewVisible(posts.size() == 0);
+        getView().setEmptyViewVisible(mData.size() == 0);
     }
 
     private void onFeedError(Throwable e) {
