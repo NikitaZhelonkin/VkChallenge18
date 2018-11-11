@@ -6,6 +6,8 @@ import com.vk.challenge.utils.ListUtils;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
+import java.util.List;
+
 @Parcel(Parcel.Serialization.BEAN)
 public class Attachment {
 
@@ -39,9 +41,12 @@ public class Attachment {
     public String getDisplayPhoto() {
         //TODO fix retrieving photo
         if (mPhoto != null) {
-            Photo.Size size = ListUtils.find(mPhoto.getSizes(), s -> "x".equals(s.getType()));
-            size = size == null ? mPhoto.getSizes().get(0) : size;
-            return size.getUrl();
+            List<Photo.Size> sizes = mPhoto.getSizes();
+            Photo.Size size = ListUtils.find(sizes, s -> "x".equals(s.getType()));
+            if (size == null) size = ListUtils.find(sizes, s -> "q".equals(s.getType()));
+            if (size == null) size = ListUtils.find(sizes, s -> "p".equals(s.getType()));
+            if (size == null) size = sizes != null && sizes.size() > 0 ? sizes.get(0) : null;
+            return size == null ? null : size.getUrl();
         } else if (mVideo != null) {
             return mVideo.getPhoto();
         }

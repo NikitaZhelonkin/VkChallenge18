@@ -12,7 +12,7 @@ import com.vk.challenge.data.entity.State;
 
 import java.util.List;
 
-public class FeedAdapter extends FragmentPagerAdapter {
+public class FeedAdapter extends FragmentStatePagerAdapter {
 
     private List<PostItem> mData;
     private State mState;
@@ -56,11 +56,6 @@ public class FeedAdapter extends FragmentPagerAdapter {
         return mCurrent;
     }
 
-    @Override
-    public long getItemId(int position) {
-        if (position == getCount() - 1) return -mState.ordinal();
-        return getDataItem(position).getPost().getPostId();
-    }
 
     @Override
     public int getItemPosition(@NonNull Object object) {

@@ -19,7 +19,7 @@ public class App extends Application {
         VKSdk.initialize(this);
 
         sAppComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
+                .appModule(new AppModule(getApplicationContext()))
                 .build();
     }
 
