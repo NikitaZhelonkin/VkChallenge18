@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -46,6 +47,14 @@ public class FeedRepository {
                             it.getSourceId() > 0 ? ListUtils.find(users, u -> u.getId() == it.getSourceId()) : null,
                             it.getSourceId() > 0 ? null : ListUtils.find(groups, g -> g.getId() == Math.abs(it.getSourceId()))));
                 });
+    }
+
+    public Completable like(Post post){
+        return mVkApiService.likesAdd("post", post.getSourceId(), post.getPostId()).toCompletable();
+    }
+
+    public Completable ignore(Post post){
+        return mVkApiService.feedIgnoreItem("wall", post.getSourceId(),post.getPostId()).toCompletable();
     }
 
     private Single<List<User>> getUsers(@Nullable List<Long> ownerIds) {

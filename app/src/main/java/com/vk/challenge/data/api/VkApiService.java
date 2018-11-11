@@ -20,11 +20,11 @@ public interface VkApiService {
 
     @POST("method/likes.add")
     @FormUrlEncoded
-    Single<ResponseBody> likesAdd(@Field("type") String type, @Field("owner_id") int ownerId, @Field("item_id") int itemId);
+    Single<ResponseBody> likesAdd(@Field("type") String type, @Field("owner_id") long ownerId, @Field("item_id") long itemId);
 
     @POST("method/newsfeed.ignoreItem")
     @FormUrlEncoded
-    Single<ResponseBody> feedIgnoreItem(@Field("type") String type, @Field("owner_id") int ownerId, @Field("item_id") int itemId);
+    Single<ResponseBody> feedIgnoreItem(@Field("type") String type, @Field("owner_id") long ownerId, @Field("item_id") long itemId);
 
     @GET("method/users.get")
     Single<UsersResponse> usersGet(@Query("user_ids") String userIds, @Query("fields") String fields);

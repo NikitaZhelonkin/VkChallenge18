@@ -1,7 +1,6 @@
 package com.vk.challenge.main;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.vk.challenge.data.entity.PostItem;
 import com.vk.challenge.data.entity.State;
@@ -59,11 +58,17 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
     }
 
     public void like(PostItem postItem) {
-        Log.e("TAG", "like " + postItem.getPostOwner().getDisplayName());
+        mFeedRepository.like(postItem.getPost())
+                .compose(AppSchedulers.ioToMainTransformer())
+                .onErrorComplete()
+                .subscribe();
     }
 
     public void ignore(PostItem postItem) {
-        Log.e("TAG", "ignore " + postItem.getPostOwner().getDisplayName());
+        mFeedRepository.ignore(postItem.getPost())
+                .compose(AppSchedulers.ioToMainTransformer())
+                .onErrorComplete()
+                .subscribe();
     }
 
     private void loadFeed() {
