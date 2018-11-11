@@ -80,13 +80,11 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
         mCurrentPage++;
         if (getView() == null) return;
         getView().setFeed(posts, mState = State.LOADING);
-        Log.e("TAG", "OK");
     }
 
     private void onFeedError(Throwable e) {
         if (getView() == null) return;
         getView().setFeed(null, mState = State.ERROR);
-        Log.e("TAG", "ERROR" + e);
     }
 
     @Override

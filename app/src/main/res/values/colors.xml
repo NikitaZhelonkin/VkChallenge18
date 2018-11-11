@@ -9,6 +9,9 @@
     <color name="colorTextPrimary">#2a2d31</color>
     <color name="colorTextTitle">#2c2d2e</color>
 
+    <color name="colorIndicator">#3dffffff</color>
+    <color name="colorIndicatorSelected">#ffffff</color>
+
     <color name="cool_blue">#4680c2</color>
     <color name="cornflower_blue">#5692d7</color>
     <color name="pale_grey">#f7f9fa</color>

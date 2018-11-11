@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -20,13 +21,15 @@ import com.bumptech.glide.request.RequestOptions;
 import com.vk.challenge.GlideApp;
 import com.vk.challenge.R;
 import com.vk.challenge.data.entity.Attachment;
-import com.vk.challenge.data.entity.Photo;
 import com.vk.challenge.data.entity.Post;
 import com.vk.challenge.data.entity.PostItem;
 import com.vk.challenge.data.entity.PostOwner;
 import com.vk.challenge.utils.ListUtils;
 import com.vk.challenge.utils.TimeUtils;
 import com.vk.challenge.utils.ViewUtils;
+import com.vk.challenge.widget.OnStackScrollListener;
+import com.vk.challenge.widget.StackViewPager;
+import com.vk.challenge.widget.ViewPagerIndicator;
 
 import org.parceler.Parcels;
 
@@ -36,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class FeedItemFragment extends Fragment {
+public class FeedItemFragment extends Fragment implements OnStackScrollListener {
 
     private static final String EXTRA_ITEM = "extra_item";
 
@@ -51,15 +54,22 @@ public class FeedItemFragment extends Fragment {
     @BindView(R.id.text)
     TextView mText;
     @BindView(R.id.attachments_layout)
-    FrameLayout mAttachmentsLayout;
+    ViewGroup mAttachmentsLayout;
+    @BindView(R.id.attachments_pager)
+    ViewPager mAttachmentsPager;
+    @BindView(R.id.view_pager_indicator)
+    ViewPagerIndicator mViewPagerIndicator;
     @BindView(R.id.top_layout)
     View mTopLayout;
-    @BindView(R.id.image_view)
-    ImageView mImageView;
     @BindView(R.id.card_layout)
     View mCardLayout;
     @BindView(R.id.btn_more)
     View mMoreButton;
+
+    @BindView(R.id.badge_like)
+    View mLikeBadge;
+    @BindView(R.id.badge_skip)
+    View mSkipBadge;
 
     public static FeedItemFragment create(PostItem post) {
         Bundle args = new Bundle();
@@ -75,13 +85,19 @@ public class FeedItemFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_feed_item, container, false);
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         PostItem post = getArguments() != null ? Parcels.unwrap(getArguments().getParcelable(EXTRA_ITEM)) : null;
         if (post != null) updateView(post);
+    }
+
+    @Override
+    public void onStackScrolled(float offset, int direction) {
+        float alpha = offset > 1/3f ? (1 - offset) * 3f : offset * 3f;
+        mSkipBadge.setAlpha(direction == StackViewPager.DIRECTION_LEFT ? alpha : 0);
+        mLikeBadge.setAlpha(direction == StackViewPager.DIRECTION_RIGHT ? alpha : 0);
     }
 
     private void updateView(PostItem postItem) {
@@ -91,29 +107,24 @@ public class FeedItemFragment extends Fragment {
         mText.setText(post.getText());
 
         List<Attachment> attachments = ListUtils.filter(post.getAttachments(), it ->
-                "photo".equals(it.getType()) ||
-                "video".equals(it.getType()));
+                "photo".equals(it.getType()) || "video".equals(it.getType()));
+        List<String> photos = ListUtils.map(attachments, Attachment::getDisplayPhoto);
 
         mTitle.setText(postOwner.getDisplayName());
 
-        GlideApp.with(mAvatar)
+
+        GlideApp.with(mAvatar.getContext())
                 .load(postOwner.getPhoto())
                 .apply(new RequestOptions()
                         .transform(new CircleCrop()))
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(mAvatar);
 
-        if (attachments != null && attachments.size() > 0) {
+        mAttachmentsPager.setOffscreenPageLimit(1);
+
+        if (photos != null && photos.size() > 0) {
+            mAttachmentsPager.setAdapter(new AttachmentAdapter(photos));
             mAttachmentsLayout.setVisibility(View.VISIBLE);
-            Attachment attachment = attachments.get(0);
-            if (attachment.getPhoto() != null) {
-                Photo photo = attachment.getPhoto();
-                Photo.Size size = ListUtils.find(photo.getSizes(), s -> "x".equals(s.getType()));
-                size = size == null ? photo.getSizes().get(0) : size;
-                setImage(size.getUrl());
-            } else if (attachment.getVideo() != null) {
-                setImage(attachment.getVideo().getPhoto());
-            }
             ViewUtils.onPreDraw(mText, () -> mMoreButton.setVisibility(isEllipsized(mText) ? View.VISIBLE : View.GONE));
         } else {
             mAttachmentsLayout.setVisibility(View.GONE);
@@ -130,21 +141,33 @@ public class FeedItemFragment extends Fragment {
                 mMoreButton.setVisibility(lines <= maxLines ? View.GONE : View.VISIBLE);
             });
         }
+
+        mViewPagerIndicator.setViewPager(mAttachmentsPager);
     }
 
-    private void setImage(String url) {
-        GlideApp.with(mImageView)
-                .load(url)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(mImageView);
+    @OnClick(R.id.next_handle)
+    public void onNextClick(View v) {
+        setCurrentAttachment(mAttachmentsPager.getCurrentItem() + 1);
+    }
+
+    @OnClick(R.id.prev_handle)
+    public void onPrevClick(View v) {
+        setCurrentAttachment(mAttachmentsPager.getCurrentItem() - 1);
+    }
+
+    private void setCurrentAttachment(int position) {
+        PagerAdapter adapter = mAttachmentsPager.getAdapter();
+        if (adapter == null) return;
+        if (position >= 0 && position < adapter.getCount()) {
+            mAttachmentsPager.setCurrentItem(position);
+        }
     }
 
     @OnClick(R.id.btn_more)
     public void onMoreClick(View v) {
-        mAttachmentsLayout.setMinimumHeight(mAttachmentsLayout.getHeight());
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mAttachmentsLayout.getLayoutParams();
         lp.weight = 0;
-        lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        lp.height = mAttachmentsLayout.getHeight();
         mText.setMaxLines(Integer.MAX_VALUE);
         mMoreButton.setVisibility(View.GONE);
     }

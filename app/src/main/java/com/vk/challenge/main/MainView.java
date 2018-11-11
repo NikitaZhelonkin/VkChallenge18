@@ -1,6 +1,5 @@
 package com.vk.challenge.main;
 
-import com.vk.challenge.data.entity.Post;
 import com.vk.challenge.data.entity.PostItem;
 import com.vk.challenge.data.entity.State;
 

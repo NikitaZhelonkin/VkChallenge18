@@ -2,6 +2,7 @@ package com.vk.challenge.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 
@@ -10,6 +11,7 @@ import com.vk.challenge.R;
 import com.vk.challenge.data.entity.PostItem;
 import com.vk.challenge.data.entity.State;
 import com.vk.challenge.login.LoginActivity;
+import com.vk.challenge.widget.OnStackScrollListener;
 import com.vk.challenge.widget.FixedDurationScroller;
 import com.vk.challenge.widget.PageChangeListenerAdapter;
 import com.vk.challenge.widget.StackViewPager;
@@ -37,9 +39,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         mFeedAdapter = new FeedAdapter(getSupportFragmentManager());
 
-        mViewPager.setScroller(new FixedDurationScroller(this, new FastOutSlowInInterpolator(), 500));
+        mViewPager.setScroller(new FixedDurationScroller(this, new FastOutSlowInInterpolator(), 400));
 
-        mViewPager.addOnPageChangeListener(new PageChangeListenerAdapter(){
+        mViewPager.addOnPageChangeListener(new PageChangeListenerAdapter() {
+
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+                super.onPageScrolled(i, v, i1);
+                Fragment fragment = mFeedAdapter.getCurrent();
+                if (fragment instanceof OnStackScrollListener) {
+                    ((OnStackScrollListener) fragment).onStackScrolled(v, mViewPager.getDragDirection());
+                }
+            }
+
             @Override
             public void onPageSelected(int i) {
                 if (i == mFeedAdapter.getCount() - 1) {
@@ -62,12 +74,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     @OnClick(R.id.fab_ignore)
-    public void onIgnoreClick(){
+    public void onIgnoreClick() {
         getPresenter().onIgnoreClick();
     }
 
     @OnClick(R.id.fab_like)
-    public void onLikeClick(){
+    public void onLikeClick() {
         getPresenter().onLikeClick();
     }
 

@@ -7,6 +7,9 @@
     <string name="more">Еще</string>
     <string name="repeat">Повторить</string>
 
+    <string name="like">Мне нравится</string>
+    <string name="skip">Пропустить</string>
+
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
     <string name="date_time">%1$s в %2$s</string>

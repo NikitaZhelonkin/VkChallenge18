@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ViewPagerIndicator">
+        <attr name="indicatorDrawable" format="color"/>
+        <attr name="indicatorSelectedDrawable" format="color"/>
+        <attr name="indicatorSpacing" format="dimension"/>
+    </declare-styleable>
+</resources>
