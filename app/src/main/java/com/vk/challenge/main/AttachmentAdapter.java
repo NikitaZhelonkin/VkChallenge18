@@ -55,6 +55,7 @@ public class AttachmentAdapter extends PagerAdapter {
         if (TextUtils.isEmpty(url)) return;
         GlideApp.with(v.getContext())
                 .load(url)
+                .apply(new RequestOptions().placeholder(R.drawable.bg_placeholder))
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView);
     }
