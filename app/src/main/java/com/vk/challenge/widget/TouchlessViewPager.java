@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 
 public class TouchlessViewPager extends ViewPager {
 
@@ -25,6 +26,16 @@ public class TouchlessViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        return false;
+    }
+
+    @Override
+    public boolean canScrollVertically(int direction) {
         return false;
     }
 }
