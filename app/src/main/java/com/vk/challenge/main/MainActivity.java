@@ -47,12 +47,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         mViewPager.addOnPageChangeListener(new PageChangeListenerAdapter() {
 
+            private boolean mFakeDragging;
+
             @Override
             public void onPageScrolled(int i, float v, int i1) {
                 super.onPageScrolled(i, v, i1);
                 Fragment fragment = mFeedAdapter.getCurrent();
                 if (fragment instanceof OnStackScrollListener) {
-                    ((OnStackScrollListener) fragment).onStackScrolled(v, mViewPager.getDragDirection());
+                    ((OnStackScrollListener) fragment).onStackScrolled(v, mViewPager.getDragDirection(), mFakeDragging);
                 }
             }
 
@@ -61,12 +63,24 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 if (i == mFeedAdapter.getCount() - 1) {
                     getPresenter().onReachEnd();
                 }
+
                 int direction = mViewPager.getDragDirection();
                 PostItem postItem = i > 0 ? mFeedAdapter.getDataItem(i - 1) : null;
                 if (postItem != null && direction == StackViewPager.DIRECTION_LEFT) {
                     getPresenter().ignore(postItem);
                 } else if (postItem != null && direction == StackViewPager.DIRECTION_RIGHT) {
                     getPresenter().like(postItem);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+                super.onPageScrollStateChanged(i);
+                if (mViewPager.getScrollState() == ViewPager.SCROLL_STATE_DRAGGING) {
+                    mFakeDragging = mViewPager.isFakeDragging();
+                }
+                if (mViewPager.getScrollState() == ViewPager.SCROLL_STATE_IDLE) {
+                    mFakeDragging = false;
                 }
             }
         });

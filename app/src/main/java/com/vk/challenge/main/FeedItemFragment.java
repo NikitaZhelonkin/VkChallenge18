@@ -94,7 +94,8 @@ public class FeedItemFragment extends Fragment implements OnStackScrollListener 
     }
 
     @Override
-    public void onStackScrolled(float offset, int direction) {
+    public void onStackScrolled(float offset, int direction, boolean fake) {
+        if(fake) return;
         float alpha = offset > 1/3f ? (1 - offset) * 3f : offset * 3f;
         mSkipBadge.setAlpha(direction == StackViewPager.DIRECTION_LEFT ? alpha : 0);
         mLikeBadge.setAlpha(direction == StackViewPager.DIRECTION_RIGHT ? alpha : 0);

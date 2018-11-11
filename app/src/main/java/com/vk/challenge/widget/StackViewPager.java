@@ -144,7 +144,6 @@ public class StackViewPager extends ViewPager {
                     fakeDragBy(oldValue - value);
                     oldValue = value;
                 }
-
             }
         });
 

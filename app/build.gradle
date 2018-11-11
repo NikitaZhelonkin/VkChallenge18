@@ -9,11 +9,21 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        archivesBaseName = "vkchallenge-${versionName}.${versionCode}"
+    }
+    signingConfigs {
+        release {
+            storeFile file('keystore.jks')
+            storePassword 'tx4QP9'
+            keyAlias 'release_key'
+            keyPassword 'N9hWgV'
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
