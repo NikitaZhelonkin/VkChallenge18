@@ -7,10 +7,13 @@
         <item name="android:windowBackground">@drawable/bg_window</item>
         <item name="buttonStyle">@style/Button</item>
         <item name="android:textViewStyle">@style/TextView</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 
     <style name="AppTheme.Login">
         <item name="android:windowBackground">@drawable/bg_login</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkLogin</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">false</item>
     </style>
 
     <style name="Button" parent="Widget.AppCompat.Button">
