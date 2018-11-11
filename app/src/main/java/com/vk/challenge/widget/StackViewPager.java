@@ -7,11 +7,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.Scroller;
 
 import java.lang.reflect.Field;
@@ -30,7 +30,7 @@ public class StackViewPager extends ViewPager {
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
 
-    private static final int SCROLL_DURATION = 200;
+    private static final int SCROLL_DURATION = 400;
 
     private int mPageOffset;
 
@@ -121,7 +121,7 @@ public class StackViewPager extends ViewPager {
         }
         mDragDirection = direction;
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, getWidth() / 2);
+        ValueAnimator animator = ValueAnimator.ofInt(0, getWidth() - 10);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationCancel(Animator animation) {
@@ -138,7 +138,7 @@ public class StackViewPager extends ViewPager {
             }
         });
 
-        animator.setInterpolator(new AccelerateInterpolator());
+        animator.setInterpolator(new FastOutSlowInInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             private int oldValue = 0;
@@ -287,7 +287,7 @@ public class StackViewPager extends ViewPager {
     }
 
     private boolean disableDrag() {
-        return !mDragEnabled ||  getAdapter() == null || getCurrentItem() == getAdapter().getCount() - 1;
+        return !mDragEnabled || getAdapter() == null || getCurrentItem() == getAdapter().getCount() - 1;
     }
 
 
@@ -315,7 +315,7 @@ public class StackViewPager extends ViewPager {
 
         private void setScale(View v, float value) {
             v.setPivotX(v.getWidth() / 2);
-            v.setPivotY(v.getHeight() /2);
+            v.setPivotY(v.getHeight() / 2);
             v.setScaleX(value);
             v.setScaleY(value);
         }
