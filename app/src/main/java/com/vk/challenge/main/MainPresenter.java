@@ -16,7 +16,7 @@ import ru.nikitazhelonkin.mvp.MvpPresenterBase;
 
 public class MainPresenter extends MvpPresenterBase<MainView> {
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 20;
 
     private FeedRepository mFeedRepository;
 
@@ -80,6 +80,7 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
         mCurrentPage++;
         if (getView() == null) return;
         getView().setFeed(posts, mState = State.LOADING);
+        if (mCurrentPage == 0) getView().showFabs();
     }
 
     private void onFeedError(Throwable e) {

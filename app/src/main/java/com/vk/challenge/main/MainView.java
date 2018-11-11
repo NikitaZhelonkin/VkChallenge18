@@ -17,4 +17,6 @@ public interface MainView extends MvpView {
 
     void swipeRight();
 
+    void showFabs();
+
 }

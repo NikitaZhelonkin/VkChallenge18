@@ -5,14 +5,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.view.View;
 
 import com.vk.challenge.App;
 import com.vk.challenge.R;
 import com.vk.challenge.data.entity.PostItem;
 import com.vk.challenge.data.entity.State;
 import com.vk.challenge.login.LoginActivity;
-import com.vk.challenge.widget.OnStackScrollListener;
+import com.vk.challenge.utils.ViewUtils;
 import com.vk.challenge.widget.FixedDurationScroller;
+import com.vk.challenge.widget.OnStackScrollListener;
 import com.vk.challenge.widget.PageChangeListenerAdapter;
 import com.vk.challenge.widget.StackViewPager;
 
@@ -28,6 +30,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @BindView(R.id.view_pager)
     StackViewPager mViewPager;
+    @BindView(R.id.fab_container)
+    View mFabContainer;
 
     private FeedAdapter mFeedAdapter;
 
@@ -115,5 +119,17 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private boolean canDoAutoSwipe() {
         return mViewPager.getCurrentItem() < mFeedAdapter.getCount() - 1 &&
                 mViewPager.getScrollState() == ViewPager.SCROLL_STATE_IDLE;
+    }
+
+    @Override
+    public void showFabs() {
+        mFabContainer.setVisibility(View.VISIBLE);
+        ViewUtils.onPreDraw(mViewPager, () -> {
+            mFabContainer.setTranslationY(mFabContainer.getHeight());
+            mFabContainer.animate()
+                    .translationY(0)
+                    .setDuration(300)
+                    .setInterpolator(new FastOutSlowInInterpolator()).start();
+        });
     }
 }
