@@ -24,14 +24,11 @@ public class StackViewPager extends ViewPager {
 
     private static final int PAGE_OFFSET = 0; //dips
 
-
     private static final int MAX_ROTATION = 4; //degrees
 
     private static final float PAGE_SCALE = 0.90f;
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
-
-    private static final int VISIBLE_COUNT = 3;
 
     private static final int SCROLL_DURATION = 200;
 
@@ -210,6 +207,9 @@ public class StackViewPager extends ViewPager {
         return super.onInterceptTouchEvent(ev);
     }
 
+    public int getScrollState() {
+        return mScrollState;
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -301,12 +301,7 @@ public class StackViewPager extends ViewPager {
         }
 
         private float alphaForPosition(float position) {
-            int visibleItems = getVisibleItemsCount(VISIBLE_COUNT);
-            if (position > 0 && visibleItems != 0) {
-                return -(position - visibleItems) * 1 / visibleItems;
-            } else {
-                return 1;
-            }
+            return position >= -1 ? 1 : 0;
         }
 
         private void setAlpha(View view, float alpha) {

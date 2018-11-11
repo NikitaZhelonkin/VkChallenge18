@@ -1,13 +1,14 @@
 package com.vk.challenge.main;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.vk.challenge.data.entity.PostItem;
+import com.vk.challenge.data.entity.State;
 import com.vk.challenge.data.repository.FeedRepository;
 import com.vk.challenge.utils.AppSchedulers;
 import com.vk.sdk.VKAccessToken;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -15,14 +16,15 @@ import ru.nikitazhelonkin.mvp.MvpPresenterBase;
 
 public class MainPresenter extends MvpPresenterBase<MainView> {
 
-    private FeedRepository mFeedRepository;
+    private static final int PAGE_SIZE = 10;
 
-    private List<PostItem> mData = new ArrayList<>();
+    private FeedRepository mFeedRepository;
 
     private Disposable mSubscription;
 
     private int mCurrentPage = -1;
-    private int mPageSize = 10;
+
+    private State mState;
 
     public MainPresenter(FeedRepository feedRepository) {
         mFeedRepository = feedRepository;
@@ -40,20 +42,35 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
         loadFeed();
     }
 
-    public void onEnd(){
+    public void onReachEnd() {
         loadFeed();
     }
 
     public void onIgnoreClick(){
-        //TODO
+        if (getView() != null) getView().swipeLeft();
     }
 
     public void onLikeClick(){
-        //TODO
+        if (getView() != null) getView().swipeRight();
+    }
+
+    public void onRepeatClick() {
+        loadFeed();
+    }
+
+    public void like(PostItem postItem) {
+        Log.e("TAG", "like " + postItem.getPostOwner().getDisplayName());
+    }
+
+    public void ignore(PostItem postItem) {
+        Log.e("TAG", "ignore " + postItem.getPostOwner().getDisplayName());
     }
 
     private void loadFeed() {
-        mSubscription = mFeedRepository.getFeed((mCurrentPage + 1) * mPageSize, mPageSize)
+        if (getView() != null && mState != State.LOADING) {
+            getView().setFeed(null, mState = State.LOADING);
+        }
+        mSubscription = mFeedRepository.getFeed((mCurrentPage + 1) * PAGE_SIZE, PAGE_SIZE)
                 .compose(AppSchedulers.ioToMainTransformer())
                 .subscribe(this::onFeedResult, this::onFeedError);
 
@@ -61,14 +78,15 @@ public class MainPresenter extends MvpPresenterBase<MainView> {
 
     private void onFeedResult(List<PostItem> posts) {
         mCurrentPage++;
-        mData = posts;
         if (getView() == null) return;
-        getView().setFeed(mData);
+        getView().setFeed(posts, mState = State.LOADING);
+        Log.e("TAG", "OK");
     }
 
     private void onFeedError(Throwable e) {
         if (getView() == null) return;
-        //TODO something
+        getView().setFeed(null, mState = State.ERROR);
+        Log.e("TAG", "ERROR" + e);
     }
 
     @Override

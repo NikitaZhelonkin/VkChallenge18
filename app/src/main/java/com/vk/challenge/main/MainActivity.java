@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.vk.challenge.App;
 import com.vk.challenge.R;
 import com.vk.challenge.data.entity.PostItem;
+import com.vk.challenge.data.entity.State;
 import com.vk.challenge.login.LoginActivity;
 import com.vk.challenge.widget.FixedDurationScroller;
+import com.vk.challenge.widget.PageChangeListenerAdapter;
 import com.vk.challenge.widget.StackViewPager;
 
 import java.util.List;
@@ -21,7 +21,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.nikitazhelonkin.mvp.android.MvpActivity;
 
-public class MainActivity extends MvpActivity<MainPresenter> implements MainView {
+public class MainActivity extends MvpActivity<MainPresenter> implements MainView,
+        LoadingFragment.Callback {
 
     @BindView(R.id.view_pager)
     StackViewPager mViewPager;
@@ -38,25 +39,21 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         mViewPager.setScroller(new FixedDurationScroller(this, new FastOutSlowInInterpolator(), 500));
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
+        mViewPager.addOnPageChangeListener(new PageChangeListenerAdapter(){
             @Override
             public void onPageSelected(int i) {
-                if(i==mFeedAdapter.getCount()-1){
-                    getPresenter().onEnd();
+                if (i == mFeedAdapter.getCount() - 1) {
+                    getPresenter().onReachEnd();
+                }
+                int direction = mViewPager.getDragDirection();
+                PostItem postItem = i > 0 ? mFeedAdapter.getDataItem(i - 1) : null;
+                if (postItem != null && direction == StackViewPager.DIRECTION_LEFT) {
+                    getPresenter().ignore(postItem);
+                } else if (postItem != null && direction == StackViewPager.DIRECTION_RIGHT) {
+                    getPresenter().like(postItem);
                 }
             }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
         });
-        mViewPager.setAdapter(mFeedAdapter);
     }
 
     @Override
@@ -75,16 +72,36 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     @Override
+    public void onRepeatClick() {
+        getPresenter().onRepeatClick();
+    }
+
+    @Override
     public void navigateToLogin() {
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 
     @Override
-    public void setFeed(List<PostItem> posts) {
-        mFeedAdapter.setData(posts);
+    public void setFeed(List<PostItem> posts, State state) {
+        mFeedAdapter.setData(posts, state);
         mViewPager.setAdapter(mFeedAdapter);
     }
 
+    @Override
+    public void swipeLeft() {
+        if (canDoAutoSwipe())
+            mViewPager.smoothScrollToNext(StackViewPager.DIRECTION_LEFT);
+    }
 
+    @Override
+    public void swipeRight() {
+        if (canDoAutoSwipe())
+            mViewPager.smoothScrollToNext(StackViewPager.DIRECTION_RIGHT);
+    }
+
+    private boolean canDoAutoSwipe() {
+        return mViewPager.getCurrentItem() < mFeedAdapter.getCount() - 1 &&
+                mViewPager.getScrollState() == ViewPager.SCROLL_STATE_IDLE;
+    }
 }

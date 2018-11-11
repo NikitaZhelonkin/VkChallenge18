@@ -2,9 +2,10 @@
     <string name="app_name">VKChallenge</string>
     <string name="login">Войти через вконтакте</string>
     <string name="empty_feed">Пока пусто тут</string>
-    <string name="error_feed">Ошибка загрузки ленты</string>
+    <string name="error_feed">Ошибка при загрузке ленты</string>
 
     <string name="more">Еще</string>
+    <string name="repeat">Повторить</string>
 
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
