@@ -1,5 +1,6 @@
 package com.vk.challenge.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,7 +42,11 @@ import butterknife.OnClick;
 
 public class FeedItemFragment extends Fragment implements OnStackScrollListener {
 
+    public interface Callback{
+        void onCardExpanded();
+    }
     private static final String EXTRA_ITEM = "extra_item";
+
 
     @BindView(R.id.scroll_view)
     ScrollView mScrollView;
@@ -71,6 +76,8 @@ public class FeedItemFragment extends Fragment implements OnStackScrollListener 
     @BindView(R.id.badge_skip)
     View mSkipBadge;
 
+    private Callback mCallback;
+
     public static FeedItemFragment create(PostItem post) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_ITEM, Parcels.wrap(post));
@@ -91,6 +98,14 @@ public class FeedItemFragment extends Fragment implements OnStackScrollListener 
         ButterKnife.bind(this, view);
         PostItem post = getArguments() != null ? Parcels.unwrap(getArguments().getParcelable(EXTRA_ITEM)) : null;
         if (post != null) updateView(post);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof Callback){
+            mCallback = (Callback) context;
+        }
     }
 
     @Override
@@ -171,6 +186,7 @@ public class FeedItemFragment extends Fragment implements OnStackScrollListener 
         lp.height = mAttachmentsLayout.getHeight();
         mText.setMaxLines(Integer.MAX_VALUE);
         mMoreButton.setVisibility(View.GONE);
+        if(mCallback!=null) mCallback.onCardExpanded();
     }
 
     private boolean isEllipsized(TextView textView) {

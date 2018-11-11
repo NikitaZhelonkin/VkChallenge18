@@ -46,6 +46,8 @@ public class StackViewPager extends ViewPager {
 
     private boolean mFirstLayout;
 
+    private boolean mDragEnabled = true;
+
     public StackViewPager(Context context) {
         super(context);
         init(context, null);
@@ -88,6 +90,10 @@ public class StackViewPager extends ViewPager {
             }
         });
 
+    }
+
+    public void setDragEnabled(boolean dragEnabled) {
+        mDragEnabled = dragEnabled;
     }
 
     @Override
@@ -167,7 +173,7 @@ public class StackViewPager extends ViewPager {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (disableDrag()) {
-            return super.onInterceptTouchEvent(ev);
+            return false;
         }
         final int action = ev.getAction();
         if (action != MotionEvent.ACTION_DOWN) {
@@ -213,7 +219,7 @@ public class StackViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (disableDrag()) {
-            return true;
+            return false;
         }
         final int action = ev.getAction();
 
@@ -281,7 +287,7 @@ public class StackViewPager extends ViewPager {
     }
 
     private boolean disableDrag() {
-        return getAdapter() == null || getCurrentItem() == getAdapter().getCount() - 1;
+        return !mDragEnabled ||  getAdapter() == null || getCurrentItem() == getAdapter().getCount() - 1;
     }
 
 
@@ -351,13 +357,6 @@ public class StackViewPager extends ViewPager {
         private float viewPosition(View view) {
             return (float) (view.getLeft() - getPaddingLeft() - getScrollX())
                     / (getMeasuredWidth() + getPageMargin() - getPaddingLeft() - getPaddingRight());
-        }
-
-        private int getVisibleItemsCount(int maxItems) {
-            if (getAdapter() == null) {
-                return 0;
-            }
-            return Math.min(maxItems, getAdapter().getCount());
         }
 
         private float pageWidth(View v) {

@@ -26,7 +26,8 @@ import butterknife.OnClick;
 import ru.nikitazhelonkin.mvp.android.MvpActivity;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView,
-        LoadingFragment.Callback {
+        LoadingFragment.Callback,
+        FeedItemFragment.Callback{
 
     @BindView(R.id.view_pager)
     StackViewPager mViewPager;
@@ -107,6 +108,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     @Override
+    public void onCardExpanded() {
+        mViewPager.setDragEnabled(false);
+    }
+
+    @Override
     public void navigateToLogin() {
         startActivity(new Intent(this, LoginActivity.class));
         finish();
@@ -120,14 +126,18 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void swipeLeft() {
-        if (canDoAutoSwipe())
+        if (canDoAutoSwipe()){
+            mViewPager.setDragEnabled(true);
             mViewPager.smoothScrollToNext(StackViewPager.DIRECTION_LEFT);
+        }
     }
 
     @Override
     public void swipeRight() {
-        if (canDoAutoSwipe())
+        if (canDoAutoSwipe()){
+            mViewPager.setDragEnabled(true);
             mViewPager.smoothScrollToNext(StackViewPager.DIRECTION_RIGHT);
+        }
     }
 
     private boolean canDoAutoSwipe() {
