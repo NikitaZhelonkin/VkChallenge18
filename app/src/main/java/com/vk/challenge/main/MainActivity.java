@@ -48,14 +48,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         mViewPager.addOnPageChangeListener(new PageChangeListenerAdapter() {
 
-            private boolean mFakeDragging;
+            private boolean mUserDragging;
 
             @Override
             public void onPageScrolled(int i, float v, int i1) {
                 super.onPageScrolled(i, v, i1);
                 Fragment fragment = mFeedAdapter.getCurrent();
                 if (fragment instanceof OnStackScrollListener) {
-                    ((OnStackScrollListener) fragment).onStackScrolled(v, mViewPager.getDragDirection(), mFakeDragging);
+                    ((OnStackScrollListener) fragment).onStackScrolled(v, mViewPager.getDragDirection(), mUserDragging);
                 }
             }
 
@@ -78,10 +78,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             public void onPageScrollStateChanged(int i) {
                 super.onPageScrollStateChanged(i);
                 if (mViewPager.getScrollState() == ViewPager.SCROLL_STATE_DRAGGING) {
-                    mFakeDragging = mViewPager.isFakeDragging();
+                    mUserDragging = true;
                 }
                 if (mViewPager.getScrollState() == ViewPager.SCROLL_STATE_IDLE) {
-                    mFakeDragging = false;
+                    mUserDragging = false;
                 }
             }
         });

@@ -1,13 +1,9 @@
 package com.vk.challenge.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,8 +25,6 @@ public class StackViewPager extends ViewPager {
     private static final float PAGE_SCALE = 0.90f;
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
-
-    private static final int SCROLL_DURATION = 400;
 
     private int mPageOffset;
 
@@ -116,46 +110,8 @@ public class StackViewPager extends ViewPager {
     }
 
     public void smoothScrollToNext(int direction) {
-        if (isFakeDragging()) {
-            return;
-        }
         mDragDirection = direction;
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, getWidth() - 10);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                if (isFakeDragging()) {
-                    endFakeDrag();
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (isFakeDragging()) {
-                    endFakeDrag();
-                }
-            }
-        });
-
-        animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            private int oldValue = 0;
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (isFakeDragging()) {
-                    int value = (Integer) animation.getAnimatedValue();
-                    fakeDragBy(oldValue - value);
-                    oldValue = value;
-                }
-            }
-        });
-
-        animator.setDuration(SCROLL_DURATION);
-        beginFakeDrag();
-        animator.start();
+        setCurrentItem(getCurrentItem() + 1, true);
     }
 
     public void setScroller(Scroller scroller) {
